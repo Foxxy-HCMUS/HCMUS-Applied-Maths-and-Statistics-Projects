@@ -60,6 +60,14 @@ innerleftmargin=5pt,innerrightmargin=5pt]{mybox}
     pdftitle={Report},   
 }
 \begin{document}
+\fancyhf{}
+\lhead{Báo cáo đồ án môn học Toán ứng dụng và thống kê $-$ Đồ án 1}
+\chead{}
+\rhead{Bài toán 2}
+\cfoot{\thepage}
+\rfoot{}
+\lfoot{}
+\pagestyle{fancy}
 \begin{titlepage}
 \begin{mybox}
 \begin{center}
@@ -113,11 +121,11 @@ innerleftmargin=5pt,innerrightmargin=5pt]{mybox}
 \subsection{Xác định và hình thức hóa mục tiêu của bài toán}
 \textbf{Bài toán:} Dự báo nhiệt độ trung bình năm ở 5 trạm khí tượng theo dữ liệu của Cơ quan Quản lý Khí quyển và Đại dương Quốc gia Hoa Kỳ, bao gồm:
 \begin{itemize}
-\item Trạm Lieksa Lampela ở Phần Lan (FIE00144982).
-\item Trạm Jena Sternwarte ở Đức (GM000004204).
-\item Trạm Den Helder 1 ở Hà Lan (NLM00006235).
-\item Trạm Uppsala Aut ở Thụy Điển (SWE00139148).
-\item Trạm New York City's Central Park ở Hoa Kỳ (USW00094728).
+\item \textbf{Trạm 1:} Trạm Lieksa Lampela ở Phần Lan (FIE00144982).
+\item \textbf{Trạm 2:} Trạm Jena Sternwarte ở Đức (GM000004204).
+\item \textbf{Trạm 3:} Trạm Den Helder 1 ở Hà Lan (NLM00006235).
+\item \textbf{Trạm 4:} Trạm Uppsala Aut ở Thụy Điển (SWE00139148).
+\item \textbf{Trạm 5:} Trạm New York City's Central Park ở Hoa Kỳ (USW00094728).
 \end{itemize}
 \textbf{Hình thức hóa mục tiêu của bài toán:} dùng biểu đồ phân tán, tìm các hệ số hồi quy.
 
@@ -148,4 +156,136 @@ Dữ liệu từ tập tin gốc đầu tiên (tập tin \textbf{FIE00144982.csv
 
 \section{Phân tích, đánh giá và kết luận}
 Sau khi được tiền xử lý, dữ liệu được trực quan hóa (visualized)thành biểu đồ phân tán nhờ hàm hỗ trợ của module \lstinline{matplotlib}.
+
+\subsection{Biểu đồ phân tán của dữ liệu}
+Biểu đồ phân tán về nhiệt độ trung bình năm đo được tại 5 trạm trên như sau:
+\begin{figure}[H]
+\centering{\includegraphics[scale=0.65]{images/scatter/station1}}
+\caption{Biểu đồ phân tán dữ liệu của trạm 1}
+\end{figure}
+
+\begin{figure}[H]
+\centering{\includegraphics[scale=0.65]{images/scatter/station2}}
+\caption{Biểu đồ phân tán dữ liệu của trạm 2}
+\end{figure}
+
+\begin{figure}[H]
+\centering{\includegraphics[scale=0.65]{images/scatter/station3}}
+\caption{Biểu đồ phân tán dữ liệu của trạm 3}
+\end{figure}
+
+\begin{figure}[H]
+\centering{\includegraphics[scale=0.65]{images/scatter/station4}}
+\caption{Biểu đồ phân tán dữ liệu của trạm 4}
+\end{figure}
+
+\begin{figure}[H]
+\centering{\includegraphics[scale=0.65]{images/scatter/station5}}
+\caption{Biểu đồ phân tán dữ liệu của trạm 5}
+\end{figure}
+
+\subsection{Tìm mô hình}
+Mô hình được chọn để dùng là mô hình \textbf{hồi quy} (regression).\\ 
+Hàm hồi quy $f \left( x \right)$ được chọn từ tổ hợp có giá trị r-squared lớn nhất với các hệ số thích hợp từ những hàm ${f_1}\left( x \right) = 1,$ ${f_2}\left( x \right) = x,$ ${f_3}\left( x \right) = {x^2},$ ${f_4}\left( x \right) = {x^3},$ ${f_5}\left( x \right) = {x^4},$ ${f_6}\left( x \right) = \ln \left( x \right),$ ${f_7}\left( x \right) = \sin \left( x \right)$ và ${f_8}\left( x \right) = \ln \left( x \right) \cdot \sin \left( x \right).$\\
+Các hệ số của mô hình hồi quy được tìm như sau:\\
+$x_1, x_2, ..., x_N$ là giá trị của các năm.\\
+$Y = \left[ {\begin{array}{*{20}{c}}
+  {{y_1}} \\ 
+  {{y_2}} \\ 
+   \vdots  \\ 
+  {{y_N}} 
+\end{array}} \right] \in {\mathbb{R}^N}$ là các giá trị nhiệt độ trung bình năm được chọn.\\
+${f_1}\left( x \right),{f_2}\left( x \right), \ldots ,{f_p}\left( x \right)$ là các hàm được chọn cho mô hình.\\
+$A = \left[ {\begin{array}{*{20}{c}}
+  {{f_1}\left( {{x_1}} \right)}&{{f_2}\left( {{x_1}} \right)}& \ldots &{{f_p}\left( {{x_1}} \right)} \\ 
+  {{f_1}\left( {{x_2}} \right)}&{{f_2}\left( {{x_2}} \right)}& \ldots &{{f_p}\left( {{x_2}} \right)} \\ 
+   \vdots & \vdots & \vdots & \vdots  \\ 
+  {{f_1}\left( {{x_N}} \right)}&{{f_2}\left( {{x_N}} \right)}& \ldots &{{f_p}\left( {{x_N}} \right)} 
+\end{array}} \right] \in {\mathbb{R}^{N \times p}}.$\\
+$\theta  = \left[ {\begin{array}{*{20}{c}}
+  {{\theta _1}} \\ 
+  {{\theta _2}} \\ 
+   \vdots  \\ 
+  {{\theta _p}} 
+\end{array}} \right] \in {\mathbb{R}^p}$ là ma trận các hệ số của mô hình hồi quy.
+Khi đó,
+$${\theta _0} = {\left( {{A^T}A} \right)^{ - 1}}{A^T}Y.$$
+Đoạn code tìm mô hình hồi quy như sau và vẽ đường hồi quy như sau:
+\begin{lstlisting}
+from itertools import chain, combinations
+from sklearn.metrics import r2_score
+def model_generate(_col):
+    return [
+            (_col, 'x', lambda x: x),
+            (np.power(_col, 2), 'x^2', lambda x: np.power(x, 2)),
+            (np.power(_col, 3), 'x^3', lambda x: np.power(x, 3)),
+            (np.power(_col, 4), 'x^4', lambda x: np.power(x, 4)),
+            (np.log(_col), 'log(x)', lambda x: np.log(x)),
+            (np.sin(_col), 'sin(x)', lambda x: np.sin(x)),
+            (np.multiply(np.sin(_col), np.log(_col)), 'log(x) * sin(x)', 
+             lambda x: np.multiply(np.sin(x), np.log(x)))
+    ]
+    
+def powerset(iterable):
+    "powerset([1,2,3]) --> (1,) (2,) (3,) (1,2) (1,3) (2,3) (1,2,3)"
+    s = list(iterable)
+    return chain.from_iterable(combinations(s, r) for r in range(1, len(s)+1))
+
+def calculate_theta(A, y):
+    return np.linalg.inv(A.T * A) * A.T * y
+
+def find_model(x, y):
+    N = x.shape[0] # get number of rows
+    _best_r2 = -np.Inf
+    _best_model = None
+    _best_theta = None
+    _best_model_as_text = None
+    for _model in powerset(model_generate(x)):
+        A = np.ones((N, 1))
+        for _elem in _model:
+            A = np.concatenate((A, _elem[0]), axis = 1) # Merge columns
+        try:
+            theta = calculate_theta(A, y)
+            y_hat = A * theta
+            r2 = r2_score(np.squeeze(np.asarray(y, dtype=np.float64)), 
+                            np.squeeze(np.asarray(y_hat, dtype=np.float64)))
+            if _best_r2 < r2:
+                _best_model = [item[2] for item in _model]
+                _best_model_as_text = [item[1] for item in _model]
+                _best_r2 = r2
+                _best_theta = theta
+        except:
+            continue
+    _text = ""
+    _text += str(float(_best_theta[0])) + " + " 
+    _text += "".join([str(np.round(a[0], 5)) + "*" + b + " + " 
+                      for a,b in zip(np.asarray(_best_theta[1:]), _best_model_as_text)])[:-2]
+    return (_best_r2, _text, _best_model, _best_theta)
+
+def eval_value(_model, _theta, x):
+    result = float(_theta[0])
+    for model, theta in (zip(_model, _theta[1:])):
+        result = result + float(model(x)) * float(theta)
+    return result
+
+def regression(file_name):
+    # regression model
+    df = pd.read_csv(file_name)
+    x = np.matrix(np.arange(1991, 2020 + 1), dtype = np.float64).T # create N * 1 matrix
+    y = np.matrix(list(df.iloc[:]['Temperature']), dtype = np.float64).T # create N * 1 matrix
+    plt.scatter(np.squeeze(np.asarray(x)), 
+                np.squeeze(np.asarray(y)), 
+                linewidths=0.6)
+    
+    
+    _r2, _text, _model, _theta = find_model(x, y)
+    print(f"Best r2: {_r2}")
+    print(f"Model: {_text}")
+
+    x_test = np.linspace(1990, 2050, 200)
+    y_test = np.array([eval_value(_model, _theta, _x) for _x in x_test])
+    plt.plot(x_test, y_test)
+    plt.show()
+\end{lstlisting}
+
 \end{document}
