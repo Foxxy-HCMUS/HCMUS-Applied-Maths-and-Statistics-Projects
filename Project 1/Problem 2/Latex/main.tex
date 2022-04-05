@@ -90,7 +90,7 @@ innerleftmargin=5pt,innerrightmargin=5pt]{mybox}
 \textbf{TOÁN ỨNG DỤNG VÀ THỐNG KÊ}\\
 \fontsize{18}{12}\selectfont
 \textbf{ĐỀ TÀI: Bài toán khí hậu}\\
-\textbf{Bài toán 2}
+\textbf{Bài toán 2: Dự báo dữ liệu về nhiệt độ}
 \end{center}
 \vskip 1 cm
 \fontsize{14}{12}\selectfont
@@ -104,18 +104,24 @@ innerleftmargin=5pt,innerrightmargin=5pt]{mybox}
 \end{itemize}
 \vskip 3 cm
 \begin{center}
-\textbf{THÀNH PHỐ HỒ CHÍ MINH, THÁNG 3-4 NĂM 2022}
+\textbf{THÀNH PHỐ HỒ CHÍ MINH, THÁNG 4 NĂM 2022}
 \end{center}
 \end{mybox}
 \end{titlepage}
+
+\section*{Lời nói đầu}
+Hiện nay, biến đổi khí hậu đang là một chủ đề nhận được sự quan tâm trên toàn thế giới. Nhiều tổ chức liên chính phủ như Ủy ban Liên chính phủ về Biến đổi Khí hậu (IPCC) được lập ra nhằm tìm kiếm những giải pháp cho tình trạng này. Trong đó, tình trạng nóng lên toàn cầu (global warming) nổi lên như một trong những vấn đề bức thiết nhất. Nhận thấy được tầm quan trọng này, nhóm chúng em quyết định làm bài toán về phân tích và dự đoán nhiệt độ trung bình năm ở một số nơi trên Trái Đất, nhằm giúp đưa ra những giải pháp phù hợp.
+\begin{flushright}
+Thành phố Hồ Chí Minh, tháng 4 năm 2022
+\end{flushright} 
+\newpage
+
 \tableofcontents
 \listoffigures
 \listoftables
 \newpage
 
-\section*{Lời nói đầu}
 
-\newpage
 
 \section{Đặt vấn đề}
 \subsection{Xác định và hình thức hóa mục tiêu của bài toán}
@@ -185,8 +191,8 @@ Biểu đồ phân tán về nhiệt độ trung bình năm đo được tại 5
 \end{figure}
 
 \subsection{Tìm mô hình}
-Mô hình được chọn để dùng là mô hình \textbf{hồi quy} (regression).\\ 
-Hàm hồi quy $f \left( x \right)$ được chọn từ tổ hợp có giá trị r-squared lớn nhất với các hệ số thích hợp từ những hàm ${f_1}\left( x \right) = 1,$ ${f_2}\left( x \right) = x,$ ${f_3}\left( x \right) = {x^2},$ ${f_4}\left( x \right) = {x^3},$ ${f_5}\left( x \right) = {x^4},$ ${f_6}\left( x \right) = \ln \left( x \right),$ ${f_7}\left( x \right) = \sin \left( x \right)$ và ${f_8}\left( x \right) = \ln \left( x \right) \cdot \sin \left( x \right).$\\
+Mô hình được chọn để dùng là mô hình \textbf{hồi quy} (regression). Đây là một mô hình khá thường gặp trong các bài toán dự đoán.\\ 
+Dựa vào sự phân bổ của dữ liệu về nhiệt độ trung bình năm ở 5 trạm, hàm hồi quy $f \left( x \right)$ được chọn từ tổ hợp có giá trị r-squared lớn nhất với các hệ số thích hợp từ những hàm ${f_1}\left( x \right) = 1,$ ${f_2}\left( x \right) = x,$ ${f_3}\left( x \right) = {x^2},$ ${f_4}\left( x \right) = {x^3},$ ${f_5}\left( x \right) = {x^4},$ ${f_6}\left( x \right) = \ln \left( x \right),$ ${f_7}\left( x \right) = \sin \left( x \right)$ và ${f_8}\left( x \right) = \ln \left( x \right) \cdot \sin \left( x \right).$\\
 Các hệ số của mô hình hồi quy được tìm như sau:\\
 $x_1, x_2, ..., x_N$ là giá trị của các năm.\\
 $Y = \left[ {\begin{array}{*{20}{c}}
@@ -288,4 +294,50 @@ def regression(file_name):
     plt.show()
 \end{lstlisting}
 
+\subsubsection{Mô hình cụ thể của từng trạm}
+Sau khi được chọn lọc, so sánh bởi các giá trị r-squared, các mô hình được chọn cho từng trạm như sau:
+\begin{itemize}
+\item Trạm 1: $ - 428760.8877986716 + 572.43424x  - 0.21496{x^2} + 336.39369\sin \left( x \right) - 44.23939\ln (x)\sin \left( x \right).$ Giá trị r-squared tương ứng là: $0.4152716333306189.$
+\item Trạm 2: $ - 2240889.587199211 + 2981.88199x - 1.11596{x^2} + 474.80371*\sin \left( x \right) - 62.40748\ln \left( x \right)\sin \left( x \right).$ Giá trị r-squared tương ứng là: $0.43883419511592425.$
+\item Trạm 3: $ - 2110487.082359817 + 2806.3352x - 1.04951{x^2} + 405.11019\sin \left( x \right) +  - 53.25191\ln \left( x \right)\sin \left( x \right).$ Giá trị r-squared tương ứng là: $0.3831435591080794.$
+\item Trạm 4: $ - 1096522.0636323318 + 1461.34733x - 0.54775{x^2} + 207.56986\sin \left( x \right) - 27.28003\ln \left( x \right)\sin \left( x \right).$ Giá trị r-squared tương ứng là: $0.3877112193377744.$
+\item Trạm 5: $91696.26412356505 + 6.95143x - 13891.27228\ln \left( x \right) + 120.21781\sin \left( x \right) - 15.79415\ln \left( x \right)\sin \left( x \right).$ Giá trị r-squared tương ứng là: $0.15745734304409686.$
+\end{itemize}
+
+\subsubsection{Kết quả dự đoán}
+\begin{figure}[H]
+\center{\includegraphics[scale=0.7]{images/result/res1}}
+\caption{Kết quả ở trạm 1}
+\end{figure}
+
+\begin{figure}[H]
+\center{\includegraphics[scale=0.7]{images/result/res2}}
+\caption{Kết quả ở trạm 2}
+\end{figure}
+
+\begin{figure}[H]
+\center{\includegraphics[scale=0.7]{images/result/res3}}
+\caption{Kết quả ở trạm 3}
+\end{figure}
+
+\begin{figure}[H]
+\center{\includegraphics[scale=0.7]{images/result/res4}}
+\caption{Kết quả ở trạm 4}
+\end{figure}
+
+\begin{figure}[H]
+\center{\includegraphics[scale=0.7]{images/result/res5}}
+\caption{Kết quả ở trạm 5}
+\end{figure}
+
+Từ những kết quả được đưa ra từ mô hình hồi quy nêu trên, có thể thấy, nhiệt độ trung bình năm ở các địa điểm này đang dần tăng lên, nhất là kể từ khi máy tính trở nên bùng nổ vơi Cuộc Cách mạng Công ngiệp 4.0. Thậm chí, nhiệt độ trung bình năm ở một vài trạm có thể tăng gấp đôi vào năm 2050. Đây là hồi chuông báo động to lớn đối với toàn nhân loại về vấn đề biến đổi khí hậu, mà cá thể trong bài toán này là sự nóng lên toàn cầu, đặt ra một yêu cầu khẩn thiết về việc đưa ra những giải pháp thiết thực và kịp thời để giảm thiểu tình trạng nhiệt độ trung bình năm tăng cao.\\
+Như vậy, bằng việc khảo sát một vài trạm khí tượng nằm rải rác khu vực Châu Âu và Bắc Mỹ, ta có thể thấy nhiệt độ trung bình năm đang có xu hướng tăng lên đáng báo động, đòi hỏi những biện pháp cấp bách từ các Chính phủ.
+\newpage
+
+\section*{Lời cảm ơn}
+Trong quá trình thực hiện đồ án này, chúng em đã nhận được những bài giảng tận tâm, chi tiết về các phương pháp của Thầy Nguyễn Đình Thúc. Bên cạnh đó là những sự hướng dẫn của các Thầy, Cô trợ giảng cho môn học Toán ứng dụng và thống kê. Chúng em xin cảm ơn các Thầy, Cô.\\
+Ngoài ra, chúng em cũng xin cảm ơn các bạn trong lớp đã đưa ra những chỉ dẫn, góp ý trong quá trình chúng em thực hiện đồ án.
+\begin{flushright}
+Thành phố Hồ Chí Minh, tháng 4 năm 2022
+\end{flushright} 
 \end{document}
