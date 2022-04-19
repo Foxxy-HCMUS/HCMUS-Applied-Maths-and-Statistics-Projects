@@ -1,0 +1,13 @@
+\section{Lý thuyết mô hình Markov ẩn}
+Mô hình Markov ẩn (Hidden Markov model $-$ HMM) là một mô hình máy học cổ điển thông dụng trong việc xử lý chuỗi.
+\subsection{Các thành phần của một mô hình Markov ẩn là gì? Chúng khác gì với mô hình Markov?}
+Một mô hình Markov ẩn có cấu tạo như sau \supercite{angrybird, hmm2021}:
+\begin{mybox}
+\begin{itemize}
+\item $Q = {q_1}{q_2} \ldots {q_N}:$ tập hợp $N$ trạng thái (states).
+\item $A = {a_{11}} \ldots {a_{ij}} \ldots {a_{NN}}:$ ma trận xác suất chuyển (transition probability matrix) $A,$ $a_{ij}$ là xác suất chuyển từ trạng thái $i$ sang trạng thái $j,$ $\sum\limits_{j = 1}^N {{a_{ij}}}  = 1,\forall i.$
+\item $O = {o_1}{o_2} \ldots {o_T}:$ chuỗi các quan sát (observations), lấy từ bộ từ vựng (vocabulary) $V = {v_1}, {v_2}, \ldots, {v_V}.$
+\item $B = b_i \left( {o_t} \right):$ ma trận xác suất phụ thuộc trạng thái (emission probabilities), thể hiện xác suất một quan sát $o_t$ được tạo thành từ trạng thái $i.$
+\item $\pi = {\pi_1}, {\pi_2}, \ldots, {\pi_N}:$ phân phối xác suất ban đầu theo trạng thái, có nghĩa là $\pi_i$ thể hiện xác suất xích Markov bắt đầu ở trạng thái $i.$ Một số trạng thái $j$ có thể có $\pi_j = 0,$ do chúng không thể là trạng thái ban đầu của xích Markov.
+\end{itemize}
+\end{mybox}
