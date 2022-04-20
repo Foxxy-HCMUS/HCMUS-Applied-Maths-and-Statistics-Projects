@@ -11,3 +11,15 @@ Một mô hình Markov ẩn có cấu tạo như sau \supercite{angrybird, hmm20
 \item $\pi = {\pi_1}, {\pi_2}, \ldots, {\pi_N}:$ phân phối xác suất ban đầu theo trạng thái, có nghĩa là $\pi_i$ thể hiện xác suất xích Markov bắt đầu ở trạng thái $i.$ Một số trạng thái $j$ có thể có $\pi_j = 0,$ do chúng không thể là trạng thái ban đầu của xích Markov.
 \end{itemize}
 \end{mybox}
+So với xích Markov (Markov chains), mô hình Markov ẩn có thêm 2 thành phần là $O$ $-$ chuỗi các quan sát và $B$ $-$ ma trận xác suất phụ thuộc trạng thái.
+
+\subsection{Các giả thiết (assumptions) đặt ra cho mô hình Markov ẩn là gì? Tìm ví dụ các bài taosn mà các giả thiết này hợp lý và bất hợp lý.}
+\textbf{Các giả thiết (assumptions) đặt ra cho mô hình Markov ẩn.}\\
+Một mô hình Markov ẩn có 2 giả thiết chính:
+\begin{itemize}
+\item Xác suất của một trạng thái cụ thể chỉ phụ thuộc vào trạng thái ngay trước đó (Markov Assumptions):
+\begin{equation}
+P\left( {\left. {{q_i}} \right|{q_1} \ldots {q_{i - 1}}} \right) = P\left( {\left. {{q_i}} \right|{q_{i - 1}}} \right).
+\end{equation}
+
+\end{itemize}
