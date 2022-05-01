@@ -77,7 +77,8 @@ Mã giả của thuật toán Viterbi như sau:
      \State $best\_path\_prob \gets \mathop {\max }\limits_{s = 1}^N \left( {viterbi\left[ {s,T} \right]} \right)$
      \State $best\_path\_pointer \gets \mathop {\arg \max }\limits_{s = 1}^N \left( {viterbi\left[ {s,T} \right]} \right) $
      \State $best\_path \gets \text{con đường bắt đầu ở trạng thái }  best\_path\_pointer, $
-     \State $\text{, đi theo } backpointer[] \text{ đến các trạng thái}$
+     \State $\text{đi theo } backpointer[] \text{ đến các trạng thái}$
+     \State
     \Return $best\_path, best\_path\_prob$
     \EndFunction
   \end{algorithmic}
@@ -113,4 +114,145 @@ $$b{t_t}\left( j \right) = \mathop {\max }\limits_{i = 1}^N \left( {v{}_{t - 1}\
 Xác suất tốt nhất: $P* = \mathop {\max }\limits_{i = 1}^N \left( {{v_T}\left( i \right)} \right)$\\
 Điểm bắt đầu của con đường tốt nhất: $q_T* = \mathop {\arg \max }\limits_{i = 1}^N \left( {{v_T}\left( i \right)} \right)$
 \end{center}
+\end{enumerate}
+\textbf{Đánh giá độ phức tạp của thuật toán Viterbi:}
+\begin{enumerate}
+\item Độ phức tạp thời gian:
+\begin{itemize}
+\item Ở bước khởi tạo, ta duyệt qua lần lượt các trạng thái đánh số từ $1$ đến $N$ nên độ phức tạp thời gian ở bước này là $O \left( N \right).$
+\item Ở bước đệ quy, ta dùng 2 vòng lặp lồng nhau. Vòng lặp trong có độ phức tạp  $O \left( N^2 \right),$ còn vòng lặp ngoài có độ phức tạp  $O \left( T \right).$ Như vậy, độ phức tạp của bước này là $O \left( {T \cdot N^2} \right).$
+\item Ở bước kết thúc, độ phức tạp của bước này là $O \left( N \right).$ 
+\end{itemize}
+Như vậy, độ phức tạp thời gian của thuật toán Viterbi là $O \left( {T \cdot N^2} \right).$
+\item Độ phức tạp không gian của thuật toán này là $O \left( {T \cdot N} \right).$
+\end{enumerate}
+
+\subsection{Cho một chuỗi quan sát, giả sử ta cho rằng chuỗi quan sát này được sinh ra từ một mô hình Markov ẩn với tham số chưa biết, thuật toán Baum $-$ Welch được dùng để ước lượng các tham số này. Thuật toán Baum $-$ Welch là trường hợp đặc biệt của thuật toán Kỳ vọng $-$ Tối ưu (Expectation $-$ Maximization, hay EM). Thuật toán này gồm 2 bước: bước E (Expectation, hay Kỳ vọng) và bước M (Maximization, hay Tối ưu).}
+\subsubsection{Mô tả thuật toán Kỳ vọng $-$ Tối ưu tổng quát.}
+Thuật toán EM là một thuật toán tuần tự (iterative algorithm), dùng để tìm kỳ vọng ban đầu cho các xác suất, sau đó sử dụng những kỳ vọng này để tìm những kỳ vọng tốt hơn, cứ tiếp tục như vậy, cải thiện giá trị xác suất học được một cách tuần tự.\\
+Mô tả thuật toán Kỳ vọng $-$ Tối ưu: \supercite{g4gem}
+\begin{enumerate}
+\item Cho một tập hợp dữ liệu chưa hoàn chỉnh (incomplete data), xét một tập hợp các tham số khởi đầu (starting parameters).
+\item Bước Kỳ vọng (bước E): sử dụng các dữ liệu đã được quan sát sẵn từ tập dataset, dự đoán giá trị các dữ liệu bị khuyết.
+\item Bước Tối ưu (bước M): Dữ liệu hoàn chỉnh từ bước Kỳ vọng được sử dụng để cập nhật giá trị các tham số.
+\item Lặp lại bước 2 và bước 3 cho đến khi hội tụ về giá trị tối ưu.
+\end{enumerate}
+\subsubsection{Mô tả và đánh giá độ phức tạp của bước E và bước M của thuật toán Baum $-$ Welch}
+Trong thực tế, nhiều trường hợp ta không thể biết số lượng của bất kỳ một trạng thái ẩn nào. Thuật toán Baum $-$ Welch xử lý vấn đề này bằng cách dự đoán các số lượng này một cách tuần tự. Ta bắt đầu bằng việc dự đoán xác suất chuyển và quan sát, sau đó sử dụng các kết quả này để tìm những xác suất tốt hơn. Ta tiếp tục bằng việc tính xác suất tiến trước (forward probability) cho một quan sát, sau đó chia khối lượng xác suất (probability mass) cho tất cả con đường dẫn tới xác suất tiến trước này.\\
+Trước hết, ta cần định nghĩa khái niệm \textbf{xác suất quay lại} (backward probability). Khái niệm này chỉ xác suất nhìn thấy quan sát này từ thời điểm $t + 1$ đến cuối, biết rằng ta đang ở trạng thái $i$ tại thời điểm $t$ (và một tự động hóa $\lambda$ có sẵn):
+\begin{equation}
+{\beta _t}\left( i \right) = P\left( {\left. {{o_{t + 1}},{o_{t + 2}}, \ldots ,{o_T}} \right|{q_t} = i,\lambda } \right)
+\label{form3}
+\end{equation}
+Xác suất này được tính bằng quy nạp tương tự như thuật toán tiến trước.
+\begin{enumerate}
+\item Khởi tạo:
+	$${\beta _T}\left( i \right) = 1,\begin{array}{*{20}{c}}
+  {}&{1 \leqslant i \leqslant N.} 
+\end{array}$$
+\item Đệ quy:
+$${\beta _t}\left( i \right) = \sum\limits_{j = 1}^N {{a_{ij}}{b_j}\left( {{o_{t + 1}}} \right){\beta _{t + 1}}\left( j \right),} \begin{array}{*{20}{c}}
+  {}&{1 \leqslant i \leqslant N,1 \leqslant t < T} 
+\end{array}.$$
+\item Kết thúc:
+$$P\left( {\left. O \right|\lambda } \right) = \sum\limits_{j = 1}^N {{\pi _j}{b_j}\left( {{o_1}} \right){\beta _1}\left( j \right)} .$$
+\end{enumerate}
+
+Hình \ref{bw_fig1} sau đây minh họa các bước quy nạp tính xác suất quay lui.
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=1]{bw/fig1}
+\end{center}
+\caption{Tính xác suất quay lui \label{bw_fig1}}
+\end{figure}
+Ta sẽ xem xét cách mà xác suất tiến trước và xác suất quay lui giúp ta tính xác suất chuyển $a_{ij}$ và xác suất quan sát $b_i \left( {o_t} \right)$ từ một chuỗi quan sát, ngay cả khi con đường thật sự trong mô hình bị ẩn.\\
+\begin{equation}
+\widehat {{a_{ij}}} = \frac{\text{giá trị kỳ vọng của số lượng chuyển đổi từ trạng thái } i \text{ sang trạng thái } j}{\text{giá trị kỳ vọng của số lượng chuyển đổi từ trạng thái } i}.
+\label{form4}
+\end{equation}
+Ta định nghĩa ${\xi _t}$ là xác suất xảy ra trạng thái $i$ tại thời điểm $t$ và trạng thái $j$ tại thời điểm $t + 1,$ biết trước mô hình và chuỗi quan sát.
+\begin{equation}
+{\xi _t \left( {i, j} \right)} = P\left( {\left. {{q_t} = i,{q_{t + 1}} = j} \right|O,\lambda } \right).
+\end{equation}
+Quá trình tính giá trị này được minh họa trong hình \ref{bw_fig2}.
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=1]{bw/fig2}
+\end{center}
+\caption{Tính xác suất $\xi_t \left( {i, j} \right).$ Rabiner \copyright 1989 IEEE \label{bw_fig2}}
+\end{figure}
+Sau một vài bước biến đổi (\cite{hmm2021}), ta được công thức tính $\xi_t$ như sau:
+\begin{equation}
+{\xi _t}\left( {i,j} \right) = \frac{{{\alpha _t}\left( i \right){a_{ij}}{b_j}\left( {{o_t} + 1} \right){\beta _{t + 1}}\left( j \right)}}{{\sum\limits_{j = 1}^N {{\alpha _t}\left( j \right){\beta _t}\left( j \right)} }}.
+\end{equation}
+Số lượng chuyển đổi kỳ vọng từ trạng thái $i$ sang trạng thái $j$ là tổng theo $t$ của các giá trị $\xi.$ Với công thức (\ref{form4}), ta chỉ cần thêm tổng các chuyển đổi từ trạng thái $i.$ Ta có thể thu được giá trị này bằng cách tìm tất cả giá trị chuyển ra từ $i.$ Công thức cho $\widehat{a_{ij}}$ như sau:
+\begin{equation}
+\widehat {{a_{ij}}} = \frac{{\sum\limits_{t = 1}^{T - 1} {{\xi _t}\left( {i,j} \right)} }}{{\sum\limits_{t = 1}^{T - 1} {\sum\limits_{k = 1}^N {{\xi _t}\left( {i,k} \right)} } }}.
+\label{form5}
+\end{equation}
+Ngoài ra, ta còn cần tìm xác suất quan sát. Đây là xác suất của một biểu tượng (symbol) $v_k$ từ bộ từ vựng quan sát (observation vocabulary) $V,$ với trạng thái $j$ biết trước: $\widehat{b_j}\left( {v_k} \right).$ Ta sẽ tính:
+\begin{equation}
+\widehat {{b_j}}\left( {{v_k}} \right) = \frac{\text{số lượng kỳ vọng thời điểm có trạng thái } j \text{ và biểu tượng quan sát} v_k}{\text{số lượng các thời điểm có trạng thái } j}.
+\end{equation}
+Ta định nghĩa $\gamma_t \left( j \right)$ là xác suất ở trạng thái $j$ tại thười điểm $t:$
+\begin{equation}
+{\gamma _t}\left( j \right) = P\left( {\left. {{q_t} = j} \right|O,\lambda } \right).
+\end{equation}
+Quá trình tính giá trị này được minh họa trong hình \ref{bw_fig3}.
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=1]{bw/fig3}
+\end{center}
+\caption{Tính xác suất $\gamma_t \left( j \right).$ Rabiner \copyright 1989 IEEE \label{bw_fig3}}
+\end{figure}
+Sau một vài bước biến đổi (\cite{hmm2021}), ta được công thức tính $\gamma_t \left( j \right)$ như sau:
+\begin{equation}
+{\gamma _t}\left( j \right) = \frac{{{\alpha _t}\left( j \right){\beta _t}\left( j \right)}}{{P\left( {\left. O \right|\lambda } \right)}}.
+\end{equation}
+Từ đó, ta có công thức tính $\widehat {{b_j}}\left( {{v_k}} \right)$ như sau:
+\begin{equation}
+\widehat {{b_j}}\left( {{v_k}} \right) = \frac{{\sum\nolimits_{t = 1\begin{array}{*{20}{c}}
+  {}&{s.t.{O_t} = {v_k}} 
+\end{array}}^T {{\gamma _t}\left( j \right)} }}{{\sum\nolimits_{t = 1}^T {{\gamma _t}\left( j \right)} }}.
+\label{form6}
+\end{equation}
+Giờ chúng ta có công thức (\ref{form5}) và công thức (\ref{form6}) để \textit{dự đoán lại} (re-estimate) ma trận xác suất chuyển $A$ và ma trận xác suất phụ thuộc trạng thái $B$ từ một chuỗi quan sát $O,$ giả sử ta đã có dự đoán trước đó của $A$ và $B.$\\
+Các thao tác dự đoán này là lõi (core) của thuật toán Baum $-$ Welch. Thuật toán này bắt đầu từ một vài dự đoán ban đầu của các tham số mô hình Markov ẩn $\lambda = \left( {A, B} \right).$  Sau đó, ta sẽ chạy tuần tự 2 bước. Giống như các trường hợp khác của thuật toán EM, thuật toán Baum $-$ Welch có 2 bước: bước E và bước M.\\
+Ở bước E, ta tính giá trị chiếm giữ trạng thái kỳ vọng (expected state occupancy count) $\gamma$ và giá trị chuyển trạng thái kỳ vọng (expected state transition count) $\xi$ từ các xác suất $A$ và $B$ trước đó.\\
+Ở bước M, ta sử dụng $\gamma$ và $\xi$ để tính giá trị $A$ và $B$ mới.
+\begin{breakablealgorithm}
+  \caption{Thuật toán Baum $-$ Welch}
+  \begin{algorithmic}[1]
+    \Function{Baum-Welch}{$observation \text{ of len } T, output \text{ } vocabulary \text{ } V, hidden \text{ } state \text{ } set \text{ } Q$} 
+   	\State \textbf{khởi tạo} $A$ và $B$
+   	\State \textbf{duyệt} đến khi hội tụ
+   	\State \Comment{Bước E}
+	\State ${\gamma _t}\left( j \right) = \frac{{{\alpha _t}\left( j \right){\beta _t}\left( j \right)}}{{{\alpha _T}\left( {{q_F}} \right)}},\begin{array}{*{20}{c}}
+  {}&{\forall t,j} 
+\end{array}$
+	\State ${\xi _t}\left( {i,j} \right) = \frac{{{\alpha _t}\left( i \right){a_{ij}}{b_j}\left( {{o_{t + 1}}} \right){\beta _{t + 1}}\left( j \right)}}{{{\alpha _T}\left( {{q_F}} \right)}},\begin{array}{*{20}{c}}
+  {}&{\forall t,i,j} 
+\end{array}$
+     \State \Comment {Bước M}
+     \State ${\widehat a_{ij}} = \frac{{\sum\limits_{t = 1}^{T - 1} {{\xi _t}\left( {i,j} \right)} }}{{\sum\limits_{t = 1}^T {\sum\limits_{k = 1}^N {{\xi _t}\left( {i,k} \right)} } }}$
+     \State $\widehat {{b_j}}\left( {{v_k}} \right) = \frac{{\sum\nolimits_{t = 1\begin{array}{*{20}{c}}
+  {}&{s.t.{O_t} = {v_k}} 
+\end{array}}^T {{\gamma _t}\left( j \right)} }}{{\sum\nolimits_{t = 1}^T {{\gamma _t}\left( j \right)} }}$
+     \State
+    \Return $A, B$
+    \EndFunction
+  \end{algorithmic}
+\end{breakablealgorithm}
+\textbf{Đánh giá độ phức tạp của thuật toán Baum $-$ Welch:}
+\begin{enumerate}
+\item Độ phức tạp thời gian:
+\begin{itemize}
+\item Bước E: bước E gồm 2 phần, phần đầu có độ phức tạp $O \left( {NT} \right),$ phần sau có độ phức tạp $O \left( {N^2T} \right)$ nên độ phức tạp của bước E là $O \left( {N^2T} \right).$
+\item Bước M: bước M gồm 2 phần, phần đầu có độ phức tạp $O \left( {N^2T} \right),$ phần sau có độ phức tạp $O \left( {NVT} \right)$ nên độ phức tạp của bước M là $O \left( {N^2T} \right).$
+\end{itemize}
+\item Độ phức tạp không gian:
+\begin{itemize}
+\item Bước E: $O \left( {N^2T} \right).$
+\item Bước M: $O \left( {N^2} \right).$
+\end{itemize}
 \end{enumerate}

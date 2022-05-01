@@ -9,3 +9,9 @@
 \contentsline {subsection}{\numberline {1.3}Cho một mô hình Markov ẩn với các tham số đã biết, thuật toán tiến trước (forward algorithm) được dùng để xác định độ hợp lý (likelihood) của một chuỗi quan sát (observation). Mô tả và đánh giá độ phức tạp của thuật toán tiến trước.}{4}{subsection.1.3}%
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {1.4}Cho một mô hình Markov ẩn với các tham số đã biết, thuật toán Viterbi được dùng để xác định chuỗi trạng thái (state) khả dĩ nhất. Mô tả và đánh giá độ phức tạp của thuật toán Viterbi.}{4}{subsection.1.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {1.5}Cho một chuỗi quan sát, giả sử ta cho rằng chuỗi quan sát này được sinh ra từ một mô hình Markov ẩn với tham số chưa biết, thuật toán Baum $-$ Welch được dùng để ước lượng các tham số này. Thuật toán Baum $-$ Welch là trường hợp đặc biệt của thuật toán Kỳ vọng $-$ Tối ưu (Expectation $-$ Maximization, hay EM). Thuật toán này gồm 2 bước: bước E (Expectation, hay Kỳ vọng) và bước M (Maximization, hay Tối ưu).}{8}{subsection.1.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {1.5.1}Mô tả thuật toán Kỳ vọng $-$ Tối ưu tổng quát.}{8}{subsubsection.1.5.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {1.5.2}Mô tả và đánh giá độ phức tạp của bước E và bước M của thuật toán Baum $-$ Welch}{8}{subsubsection.1.5.2}%
