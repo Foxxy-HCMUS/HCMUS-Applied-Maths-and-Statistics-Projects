@@ -13,18 +13,72 @@ Một mô hình Markov ẩn có cấu tạo như sau \supercite{angrybird, hmm20
 \end{mybox}
 So với xích Markov (Markov chains), mô hình Markov ẩn có thêm 2 thành phần là $O$ $-$ chuỗi các quan sát và $B$ $-$ ma trận xác suất phụ thuộc trạng thái.
 
+
 \subsection{Các giả thiết (assumptions) đặt ra cho mô hình Markov ẩn là gì? Tìm ví dụ các bài toán mà các giả thiết này hợp lý và bất hợp lý.}
 \textbf{Các giả thiết (assumptions) đặt ra cho mô hình Markov ẩn.}\\
 Một mô hình Markov ẩn có 2 giả thiết chính:
 \begin{itemize}
 \item Xác suất của một trạng thái cụ thể chỉ phụ thuộc vào trạng thái ngay trước đó (Markov Assumptions):
 \begin{equation}
-P\left( {\left. {{q_i}} \right|{q_1} \ldots {q_{i - 1}}} \right) = P\left( {\left. {{q_i}} \right|{q_{i - 1}}} \right).
+ P\left({\left. {{q_i}} \right|{q_1} \ldots {q_{i - 1}}} \right) = P\left( {\left. {{q_i}} \right|{q_{i - 1}}} \right).
+\end{equation}
+
+\item Xác suất của một quan sát \(o_i\) chỉ phụ thuộc vào trạng thái tương ứng sinh ra nó \(q_i\) chứ không phụ thuộc vào bất kỳ trạng thái \(q_j\) nào khác hay bất kỳ quan sát \(o_k\) nào.
+\begin{equation}
+P\left({\left. {{o_i}} \right|{q_1}, \ldots {q_{i}}\ldots ,q_T,o_1,\ldots,o_i,\ldots,o_T} \right) = P\left( {\left. {{o_i}} \right|{q_i}} \right).
 \end{equation}
 
 \end{itemize}
 
+Ví dụ bài toán mà giả thiết cho mô hình Markov ẩn hợp lý:
+
+Ví dụ bài toán mà giả thiết cho mô hình Markov ẩn bất hợp lý:
+
 \subsection{Cho một mô hình Markov ẩn với các tham số đã biết, thuật toán tiến trước (forward algorithm) được dùng để xác định độ hợp lý (likelihood) của một chuỗi quan sát (observation). Mô tả và đánh giá độ phức tạp của thuật toán tiến trước.}
+
+Xét mô hình Markov ẩn \(\lambda = (A,B)\) và chuỗi các quan sát \(O\), hãy xác định độ hợp lý (likelihood) của nó \(P(O|\lambda)\).
+
+Thuật toán tiến trước sử dụng một bảng để lưu trữ các giá trị trung gian và tính toán xác suất xảy ra một quan sát nào đó thông qua việc lấy tổng của tất cả các trường hợp có thể xảy ra của tập các trạng thái "ẩn" có thể đưa đến quan sát tương ứng, thực hiện tính toán trên tập các đường đi tạo thành một "lưới".
+
+Mỗi mắt xích trong "lưới" của thuật toán này, \(\alpha_t(j)\) thể hiện xác suất ở trạng thái \(j\) sau khi trải qua \(t\) quan sát đầu tiên, với mô hình \(\lambda\) đã biết, nói cách khác, \[\alpha_t(j) = P(o_1,o_2,\ldots,o_t,q_t = j|\lambda)\], và giá trị này được tính dựa trên các đường đi dẫn đến mắt xích này và lấy tổng, tức là \[\alpha_t(j) = \displaystyle\sum_{i=1}^{N}\alpha_{t-1}(i)a_{ij}b_j(o_t)\]
+
+Trong đó: \(\alpha_{t-1}(i)\) chính là xác suất trên đoạn đường đến ô này, \(a_{ij}\) là xác suất chuyển tiếp từ trạng thái \(q_i\) sang trạng thái hiện tại \(q_j\), và \(b_j(o_t)\) là độ hợp lý của trạng thái quan sát \(o_t\) ứng với trạng thái hiện tại \(j\).
+
+Sau đây là mô tả thuật toán tiến trước:
+
+\begin{breakablealgorithm}
+  \caption{Thuật toán tiến trước}
+  \begin{algorithmic}[1]
+    \Function{Forward}{$observations \text{ of len } T, stategraph \text{ of len } N$} \Return $forwardprob$
+
+    \State $\text{tạo một ma trân xác suất đường đi } forward[N, T]$
+    \State \Comment{khởi tạo}
+    \For {$\text{mỗi trạng thái } s$ \textbf{from} $1$ \textbf{to} $N$}
+        \State $forward[s,1] \gets \pi_s * b_s \left( {o_1} \right)$
+        \State \Comment {đệ quy}
+     \EndFor
+     \For {$\text{mỗi bước}$ $t$ \textbf{from} $2$ \textbf{to} $T$}
+        \For {$\text{mỗi trạng thái } s$ \textbf{from} $1$ \textbf{to} $N$}
+        	\State $forward[s, t] \gets \displaystyle\sum_{s' = 1}^N \left( {forward\left[ {s',t - 1} \right]*{a_{s',s}}*{b_s}\left( {{o_t}} \right)} \right)$
+        \EndFor
+      \EndFor
+      \State $forwardprob \gets \displaystyle\sum_{s = 1}^N forward[s,T]$
+     \State \Comment{Kết thúc}
+
+    \Return $forwardprob$
+    \EndFunction
+  \end{algorithmic}
+\end{breakablealgorithm}
+
+Trong giải thuật nói trên, giá trị \(forward[s,t]\) chính là giá trị \(\alpha_t(s)\) trình bày ở nội dung trước cùng đề mục. Các bước thực hiện được tóm lại như sau:
+
+1. Khởi tạo: gán các \[\alpha_1(j) = \pi_jb_j(o_1),\forall 1\le j\le N\] (các dòng 4, 5 trên mã giả)
+
+2. Tính toán truy hồi: tính các \[\alpha_t(j) = \displaystyle\sum_{i=1}^{N}\alpha_{t-1}(i)a_{ij}b_j(o_t); \forall 1\le j\le N, 1<t\le T\] (các dòng 7, 8, 9 trên mã giả)
+
+3. Kết thúc: giá trị cần tính \[P(O|\lambda) = \displaystyle\sum_{i=1}^{N}\alpha_{T}(i)\] (chính là giá trị \(forwardprob\) đề cập trong thuật toán)
+
+Giải thuật có độ phức tạp thời gian là \(O(N^2T)\) trong đó \(N,T\) tương ứng là độ dài của tập trạng thái và độ dài của dãy quan sát cần tính toán giá trị độ hợp lý (likelihood) này; và là \(O(NT)\) cho không gian lưu trữ (bảng tạm $forward$).
 
 \subsection{Cho một mô hình Markov ẩn với các tham số đã biết, thuật toán Viterbi được dùng để xác định chuỗi trạng thái (state) khả dĩ nhất. Mô tả và đánh giá độ phức tạp của thuật toán Viterbi.}
 Với mỗi mô hình chứa những biến ẩn (hidden variables), chẳng hạn như mô hình Markov ẩn, việc quyết định chuỗi biến nào là nền tảng (underlying source) của một (vài) chuỗi quan sát gọi là \textbf{giải mã} (decode). Công việc này được thực hiện bởi một \textbf{decoder}.\\
@@ -35,7 +89,7 @@ Ta có thể đưa ra chuỗi tốt nhất như sau: với mỗi chuỗi trạng
 Thay vào đó, thuật toán giải mã phổ biến nhất là \textbf{thuật toán Viterbi} (Viterbi algorithm). Giống như thuật toán tiến trước, Viterbi là một thuật toán quy hoạch động sử dụng dynamic programming trellis. Viterbi cũng thể hiện một biến thể của quy hoạch động, thuật toán minimum edit distance.
 \begin{figure}[H]
 \begin{center}
-\includegraphics[scale=1]{viterbi/fig1 }
+\includegraphics[scale=1]{viterbi/fig1}
 \end{center}
 \caption{Viterbi trellis dùng cho việc tìm đường đi tốt nhất qua các không gian trạng thái ẩn cho việc ăn kem. Các trạng thái ẩn được đóng khung trong vòng tròn, các quan sát được đóng khung hình vuông. Các hình tròn nét đứt màu trắng thể hiện. Hình trên thể hiện quá trình tính $v_i \left( j \right)$ cho 2 trạng thái ở 2 bước. Quá trình tính toán trong mỗi ô sử dụng công thức (\ref{form2}) $v_t \left( j \right) = max_{1 \leqslant N - 1}v_{t - 1}a_{ij}b_j \left( {o_t} \right)$. Xác suất trong mỗi ô được tính theo công thức (\ref{form1}) $v_t \left( j \right) = P \left( {q_0, q_1, ..., q_{t - 1}, o_1, o_2, ..., o_t, q_t = \left. j \right|\lambda} \right).$ \label{viterbi_fig1}}
 \end{figure}
