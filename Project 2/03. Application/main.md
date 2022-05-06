@@ -65,12 +65,16 @@ Nguồn: [Speech and Language Processing. Daniel Jurafsky & James H. Martin.](ht
 |WRB| Wh- trạng từ | how, where|
 
 ### 3.2.2 Tiền xử lí
+
 Sử dụng thư viện nltk để đọc dataset,
-Dataset lưu ở `./treebank/treebank/tagged`, copy toàn bộ file `*.pos` tới thư mục dataset ở nơi chứa mã nguồn.
-```bash
-# Giả sử file sau khi tải về ở kaggle  và giải nén lưu ở ~/
-cp ~/archive/treebank/treebank/tagged/*.pos ./dataset/
-```
+
+Sau khi tải về từ Kaggle,
+
+Dataset lưu ở `archive/treebank/treebank/combined` và raw data ở `archive/treebank/treebank/raw`, 
+
+Chia thành 2 phần test và train:
+- Train: `wsj_0001.mrg` tới `wsj_0190.mrg`
+- Test: `wsj_0191` và `wsj_0191.mrg` tới `wsj_0199` và `wsj_0199.mrg`
 
 Theo `treebank/treebank/combined/README`, dữ liệu ban đầu đã được chạy qua PARTS (Ken Church's stochastic part-of-speech tagger), sau đó được sửa lại thông qua người gán nhãn, ghép với câu dữ liệu gốc tạo thành file Bracket. Một số điểm cần phải sửa đổi sau khi load dataset (Các file `.mrg`):
 - Các kí hiệu có nhãn dán riêng biệt, để đơn giản cho việc xử lí và thống nhất với các nhãn dán đã liệt kê ở trên, thay đổi nhãn của ký hiệu thành `SYM`
@@ -78,5 +82,35 @@ Theo `treebank/treebank/combined/README`, dữ liệu ban đầu đã được c
 # 3.3 Mô tả các thành phần của mô hình
 - Tập các trạng thái ẩn: là tập các tag có thể của mỗi từ (dựa trên quy tắc gán nhãn của Penn TreeBank dataset).
 
-> S = {"CC", "CD", "DT", "EX", ..., "WRB"}
-- Các quan sát có thể
+> S = {'JJS', 'PRP$', 'WDT', 'NNP', 'TO', 'PDT', 'WRB', 'WP', 'NNS', 'VB', 'MD', 'RP',  'PRP', 'JJR', 'JJ', 'VBZ', 'RBS', 'VBG', 'POS', 'VBD', 'NN', 'UH', 'FW', 'NNPS', 'WP$', 'EX', 'SYM', 'RBR', 'VBN', 'LS', 'IN', 'DT', 'VBP', 'CD', 'RB', 'CC'}
+
+- Các quan sát có thể: Những từ trong câu theo thứ tự đã được gán nhãn, ví dụ `"I_PRP", "am_VB", "good_JJ",...`
+- Các giả thiết của mô hình Markov ẩn phù hợp với tình huống này, do nhãn dán của một từ thường phụ thuộc vào từ phía trước nó (Vd sau động từ khiếm khuyết thường sẽ đi với một động từ nguyên mẫu)
+
+### Các giả thiết được sử dụng
+#### 1. Giả thiết của Markov ẩn:
+- Xác suất của một trạng thái cụ thể chỉ phụ thuộc vào trạng thái ngay trước đó (Markov Assumptions)
+$$P\left({\left. {{q_i}} \right|{q_1} \ldots {q_{i - 1}}} \right) = P\left( {\left. {{q_i}} \right|{q_{i - 1}}} \right)$$
+- Xác suất của quan sát đầu ra $o_i$ chỉ phụ thuộc vào trạng thái tạo ra quan sát $q_i$, không bị ảnh hưởng bởi các quan sát và trạng thái khác (Independence Assumption).
+$$P\left({\left. {{o_i}} \right|{q_1} \ldots {q_{T}}, {o_1} \ldots {o_{T}}} \right) = P\left( {\left. {{o_i}} \right|{q_{i}}} \right)$$
+#### 2. Giả thiết cho POS tagging
+- Giả thiết bigram: xác suất của một nhãn chỉ phụ thuộc vào từ phía trước nó, thay vì phụ thuộc vào dãy các nhãn.
+$$P\left({{t_1} \ldots {t_{n}}} \right) = \prod_{i=1}^{n}P\left( {\left. {{t_i}} \right|t_0,\ldots ,{t_{i - 1}}} \right)  \approx \prod_{i=1}^{n}P\left( {\left. {{t_i}} \right|{t_{i - 1}}} \right)$$
+- Xác xuất một từ xuất hiện dựa trên nhãn độc lập với những từ  và nhãn xung quanh 
+$$P\left({{w_1} \ldots {w_{n}}} | {{t_1} \ldots {t_{n}}} \right) \approx \prod_{i=1}^{n}P\left( {\left. {{w_i}} \right|{t_{i}}} \right)$$
+
+### Mục tiêu của bài toán
+- Với danh sách từ cho trước $w_1, \ldots, w_n$, ta cần tìm một danh sách nhãn dán $t_1, \ldots, t_n$ phù hợp.
+- Nói cách khác, ta cần tìm:
+$$\hat{t}_{1:n}=\argmax_{t_1\ldots t_n}{P\left({{t_1} \ldots {t_{n}}} | {{w_1} \ldots {w_{n}}} \right)}$$
+Sử dụng định lý Bayes:
+$$\hat{t}_{1:n}=\argmax_{t_1\ldots t_n}{\frac{P\left({{w_1} \ldots {w_{n}}} | {{t_1} \ldots {t_{n}}} \right)P\left(t_1\ldots t_n\right)}{P\left(w_1\ldots w_n\right)}}$$
+Bỏ qua mẫu số, và áp dụng các giả thuyết đã có, ta được:
+$$\hat{t}_{1:n}=\argmax_{t_1\ldots t_n}{\prod_{i=1}^{n}P\left( {\left. {{w_i}} \right|{t_{i}}} \right)P\left( {\left. {{t_i}} \right|{t_{i - 1}}} \right)}$$
+Gọi A là ma trận xác suất chuyển từ nhãn này sang nhãn khác, ta tính toán ước lượng hợp lý cực đại (MLE) của xác suất này bằng cách đếm số lượng nhãn thứ 2 theo sau nhãn thứ nhất trên số lượng nhãn thứ nhất:
+$$A[t_{i-1}, t_i] = P\left(t_i|t_{i-1}\right) = \frac{C\left(t_{i-1}, t_i\right)}{C\left(t_{i-1}\right)}$$
+Gọi B là ma trận xác suất phụ thuộc trạng thái, MLE của xác suất này sẽ là số lần nhãn $t$ được gán cho từ $w$ trên số lượng nhãn $t$:
+$$B[t_{i}, w_i] = P\left(w_i|t_{i}\right) = \frac{C\left(t_{i}, w_i\right)}{C\left(t_{i}\right)}$$
+Gọi $\pi$ là vector mở đầu phân phối xác suất, được tính bằng số lượng nhãn $t$ mở đầu câu trên tổng số câu:
+$$\pi_{t_i} = \frac{C'(t_i)}{C(sentence)}$$
+Việc tạo ra được dãy $t_1,\ldots,t_n$ phù hợp với dãy quan sát $o_1,\ldots,o_n$ thông qua việc giải mã, ở đây ta sẽ sử dụng [thuật toán Viterbi](https://en.wikipedia.org/wiki/Viterbi_algorithm)
