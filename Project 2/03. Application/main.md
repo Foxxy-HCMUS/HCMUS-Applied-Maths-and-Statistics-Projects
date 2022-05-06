@@ -70,11 +70,11 @@ Sử dụng thư viện nltk để đọc dataset,
 
 Sau khi tải về từ Kaggle,
 
-Dataset lưu ở `archive/treebank/treebank/combined` và raw data ở `archive/treebank/treebank/raw`, 
+Dataset lưu ở `archive/treebank/treebank/combined`, 
 
 Chia thành 2 phần test và train:
 - Train: `wsj_0001.mrg` tới `wsj_0190.mrg`
-- Test: `wsj_0191` và `wsj_0191.mrg` tới `wsj_0199` và `wsj_0199.mrg`
+- Test: `wsj_0191.mrg` tới `wsj_0199.mrg`
 
 Theo `treebank/treebank/combined/README`, dữ liệu ban đầu đã được chạy qua PARTS (Ken Church's stochastic part-of-speech tagger), sau đó được sửa lại thông qua người gán nhãn, ghép với câu dữ liệu gốc tạo thành file Bracket. Một số điểm cần phải sửa đổi sau khi load dataset (Các file `.mrg`):
 - Các kí hiệu có nhãn dán riêng biệt, để đơn giản cho việc xử lí và thống nhất với các nhãn dán đã liệt kê ở trên, thay đổi nhãn của ký hiệu thành `SYM`
@@ -84,7 +84,7 @@ Theo `treebank/treebank/combined/README`, dữ liệu ban đầu đã được c
 
 > S = {'JJS', 'PRP$', 'WDT', 'NNP', 'TO', 'PDT', 'WRB', 'WP', 'NNS', 'VB', 'MD', 'RP',  'PRP', 'JJR', 'JJ', 'VBZ', 'RBS', 'VBG', 'POS', 'VBD', 'NN', 'UH', 'FW', 'NNPS', 'WP$', 'EX', 'SYM', 'RBR', 'VBN', 'LS', 'IN', 'DT', 'VBP', 'CD', 'RB', 'CC'}
 
-- Các quan sát có thể: Những từ trong câu theo thứ tự đã được gán nhãn, ví dụ `"I_PRP", "am_VB", "good_JJ",...`
+- Các quan sát có thể: Những từ trong câu theo thứ tự đã được gán nhãn, ví dụ `"I_PRP", "am_VBZ", "good_JJ",...`
 - Các giả thiết của mô hình Markov ẩn phù hợp với tình huống này, do nhãn dán của một từ thường phụ thuộc vào từ phía trước nó (Vd sau động từ khiếm khuyết thường sẽ đi với một động từ nguyên mẫu)
 
 ### Các giả thiết được sử dụng
@@ -114,3 +114,7 @@ $$B[t_{i}, w_i] = P\left(w_i|t_{i}\right) = \frac{C\left(t_{i}, w_i\right)}{C\le
 Gọi $\pi$ là vector mở đầu phân phối xác suất, được tính bằng số lượng nhãn $t$ mở đầu câu trên tổng số câu:
 $$\pi_{t_i} = \frac{C'(t_i)}{C(sentence)}$$
 Việc tạo ra được dãy $t_1,\ldots,t_n$ phù hợp với dãy quan sát $o_1,\ldots,o_n$ thông qua việc giải mã, ở đây ta sẽ sử dụng [thuật toán Viterbi](https://en.wikipedia.org/wiki/Viterbi_algorithm)
+## 3.4 Đánh giá mô hình
+Sau khi mô hình đã được xây dựng xong, sẽ thực hiện gán nhãn dựa trên tập `test`, mỗi câu sẽ có tiêu chí đánh giá như sau:
+$$accuracy =\frac{correct\_tag}{total\_word\_in\_sentence}$$
+Sau đó, sẽ tính toán  độ chính xác trung bình và phương sai, mô hình được gọi là tốt khi có độ chính xác trên `70%`.

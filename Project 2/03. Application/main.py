@@ -99,15 +99,6 @@ def Pwt(wt_cnt, uni_cnt, tag, word):
     count2 = uni_cnt[tag]
     return count1 / count2
 
-# Tính pi(t_i)
-def pi(tag_sent_list, tag):
-    count1 = 0
-    for sent in tag_sent_list:
-        if sent[0][1] == tag:
-            count1 += 1
-    count2 = len(tag_sent_list)
-    return count1 / count2
-
 # Tagset (36 loại)
 tag_set = [
     'JJS', 'PRP$', 'WDT', 'NNP', 'TO', 'PDT', 'WRB', 'WP', 'NNS', 'VB', 'MD', 'RP', 
@@ -141,10 +132,11 @@ def emission_matrix(tag_sent_list, tag_set, uni_cnt, wt_cnt):
     B = defaultdict(lambda: NEAR_ZERO)
     for tag in tag_set:
         for word in word_set:
-            B[(tag, word)] = Pwt(wt_cnt, uni_cnt, tag, word)
+            B[(word, tag)] = Pwt(wt_cnt, uni_cnt, tag, word)
     return B
 B = emission_matrix(list_of_tagged_sents, tag_set, uni_cnt, wt_cnt)
 
+# Tính pi(t_i)
 def pi_vector(tag_sent_list, tag_set):
     first_tag_cnt = defaultdict(lambda: NEAR_ZERO)
     for sent in tag_sent_list:
@@ -162,3 +154,92 @@ def pi_vector(tag_sent_list, tag_set):
         if vec[tag] < NEAR_ZERO:
             vec[tag] = NEAR_ZERO
     return vec
+
+obs = ["every", "day", "there", "is", "much", "work", "to", "be" ,"done", "."]
+pi = pi_vector(list_of_tagged_sents, tag_set)
+
+# Thuật toán Viterbi trên quan sát, trả về tập quan sát cùng với nhãn dán.
+def viterbi(obs, tag_set, A, B, pi):
+    vit_matrix = defaultdict(lambda: NEAR_ZERO)
+    bck_ptr = defaultdict(lambda: NEAR_ZERO)
+
+    # Initial state:
+    for tag in tag_set:
+        vit_matrix[(tag, 0)] = pi[tag] * B[(obs[0], tag)]
+        bck_ptr[(tag, 0)] = (tag, 0)
+    
+    for t in range(1, len(obs)):
+        for tag in tag_set:
+            x = 0
+            for tag_before in tag_set:
+                tmp = vit_matrix[(tag_before, t - 1)] * A[(tag_before, tag)] * B[(obs[t], tag)]
+                if tmp > x:
+                    x = tmp
+                    bck_ptr[(tag, t)] = (tag_before, t - 1)
+            vit_matrix[(tag, t)] = x
+    
+    m = 0
+    b = None
+    for tag in tag_set:
+        if vit_matrix[(tag, len(obs) - 1)] > m:
+            m = vit_matrix[(tag, len(obs) - 1)]
+            b = (tag, len(obs) - 1)
+    
+    result = []
+
+    while b[1] != 0:
+        result.append((obs[b[1]], b[0]))
+        b = bck_ptr[b]
+    result.append((obs[b[1]], b[0]))
+    return result[::-1]
+
+print("Doan van ban ban dau:")
+print(obs)
+print("Sau khi dan nhan:")
+print(viterbi(obs, tag_set, A, B, pi))
+print("Danh gia mo hinh")
+
+# ===============================================================
+
+list_of_file = glob.glob(dataset_path + '/test/' + '/*.mrg') # Lấy đường dẫn toàn bộ file trong thư mục
+
+reader_corpus = BracketParseCorpusReader('.', list_of_file)
+
+# Đọc dữ liệu các câu
+list_of_tagged_sents = reader_corpus.tagged_sents()
+# Lọc bỏ những từ không có tag (-NONE-)
+list_of_tagged_sents = list(map(
+    lambda sent: list(filter(
+        lambda word: word[1] != '-NONE-',
+        sent
+    )),
+    list_of_tagged_sents
+))
+
+# Chuyển đổi tag dấu câu thành SYM
+list_of_tagged_sents = list(map(
+    lambda sent: list(map(
+        lambda word: (word[0], "SYM") if word[1][0] in string.punctuation else word,
+        sent
+    )),
+    list_of_tagged_sents
+))
+
+def calc_accuracy_sentence(sent, tag_set, A, B, pi):
+    obs = [word[0] for word in sent] # Tách phần chữ
+    result = viterbi(obs, tag_set, A, B, pi)
+
+    correct = 0
+    assert(len(result) == len(sent))
+    for i in range(len(result)):
+        if (sent[i] == result[i]):
+            correct += 1
+    return correct / len(sent)
+
+import statistics
+
+acc_list = [calc_accuracy_sentence(sent, tag_set, A, B, pi) * 100 for sent in list_of_tagged_sents]
+print(f"Do chinh xac cao nhat: {max(acc_list):.4f}%")
+print(f"Do chinh xac thap nhat: {min(acc_list):.4f}%")
+print(f"Trung binh: {statistics.mean(acc_list):.4f}%")
+print(f"Phuong sai: {statistics.variance(acc_list):.4f}")
