@@ -1,0 +1,114 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.1 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{nyt/global//global/global}
+    \entry{angrybird}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=57b7c8be019b4d049d71ec9ed7c60545}{%
+           family={Dũng},
+           familyi={D\bibinitperiod},
+           given={Nguyễn\bibnamedelima Tiến},
+           giveni={N\bibinitperiod\bibinitdelim T\bibinitperiod}}}%
+      }
+      \strng{namehash}{57b7c8be019b4d049d71ec9ed7c60545}
+      \strng{fullhash}{57b7c8be019b4d049d71ec9ed7c60545}
+      \strng{bibnamehash}{57b7c8be019b4d049d71ec9ed7c60545}
+      \strng{authorbibnamehash}{57b7c8be019b4d049d71ec9ed7c60545}
+      \strng{authornamehash}{57b7c8be019b4d049d71ec9ed7c60545}
+      \strng{authorfullhash}{57b7c8be019b4d049d71ec9ed7c60545}
+      \field{sortinit}{D}
+      \field{sortinithash}{6f385f66841fb5e82009dc833c761848}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{{Mô hình Markov ẩn}}
+      \verb{urlraw}
+      \verb https://jurgendn.github.io/mathematics/2020/06/16/Hidden-Markov-Model
+      \endverb
+      \verb{url}
+      \verb https://jurgendn.github.io/mathematics/2020/06/16/Hidden-Markov-Model
+      \endverb
+    \endentry
+    \entry{g4gem}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=f1e069787ece74531d112559945c6871}{%
+           family={{Geeks for Geeks}},
+           familyi={G\bibinitperiod}}}%
+      }
+      \strng{namehash}{f1e069787ece74531d112559945c6871}
+      \strng{fullhash}{f1e069787ece74531d112559945c6871}
+      \strng{bibnamehash}{f1e069787ece74531d112559945c6871}
+      \strng{authorbibnamehash}{f1e069787ece74531d112559945c6871}
+      \strng{authornamehash}{f1e069787ece74531d112559945c6871}
+      \strng{authorfullhash}{f1e069787ece74531d112559945c6871}
+      \field{sortinit}{G}
+      \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{{ML | Expectation-Maximization Algorithm}}
+      \field{year}{2019}
+      \verb{urlraw}
+      \verb https://www.geeksforgeeks.org/ml-expectation-maximization-algorithm/
+      \endverb
+      \verb{url}
+      \verb https://www.geeksforgeeks.org/ml-expectation-maximization-algorithm/
+      \endverb
+    \endentry
+    \entry{hmm2021}{incollection}{}
+      \name{author}{2}{}{%
+        {{hash=bd33d7a70284b5ead9c7985cb5c9929c}{%
+           family={Jurafsky},
+           familyi={J\bibinitperiod},
+           given={Daniel},
+           giveni={D\bibinitperiod}}}%
+        {{hash=9ed8bee488b2703da341cded66bf83cb}{%
+           family={Martin},
+           familyi={M\bibinitperiod},
+           given={James\bibnamedelima H.},
+           giveni={J\bibinitperiod\bibinitdelim H\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Stanford}%
+      }
+      \strng{namehash}{b5e6a2accdc2023c51f42c6ec010d19b}
+      \strng{fullhash}{b5e6a2accdc2023c51f42c6ec010d19b}
+      \strng{bibnamehash}{b5e6a2accdc2023c51f42c6ec010d19b}
+      \strng{authorbibnamehash}{b5e6a2accdc2023c51f42c6ec010d19b}
+      \strng{authornamehash}{b5e6a2accdc2023c51f42c6ec010d19b}
+      \strng{authorfullhash}{b5e6a2accdc2023c51f42c6ec010d19b}
+      \field{sortinit}{J}
+      \field{sortinithash}{b2f54a9081ace9966a7cb9413811edb4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Speech and Language Processing}
+      \field{chapter}{Appendix A}
+      \field{edition}{3}
+      \field{title}{{Hidden Markov model}}
+      \field{year}{2021}
+      \verb{urlraw}
+      \verb https://web.stanford.edu/$\sim$jurafsky/slp3/A.pdf
+      \endverb
+      \verb{url}
+      \verb https://web.stanford.edu/$%5Csim$jurafsky/slp3/A.pdf
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+
